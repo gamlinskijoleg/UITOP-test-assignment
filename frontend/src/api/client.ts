@@ -1,7 +1,11 @@
 import axios from 'axios';
 import type { Todo, Category } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL ?? (import.meta.env.DEV ? 'http://localhost:3001' : '');
+
+if (!API_URL) {
+  throw new Error('VITE_API_URL is not set. Configure it in Vercel to point to the Render backend URL.');
+}
 
 export const api = axios.create({
   baseURL: API_URL,

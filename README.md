@@ -2,6 +2,10 @@
 
 A full-stack Todo application built with React, TailwindCSS, Express, and SQLite.
 
+## Links
+- Repository: https://github.com/gamlinskijoleg/UITOP-test-assignment
+- Deployed app: https://uitop-test-assignment.vercel.app/
+
 ## Features
 - Create tasks with a specific category
 - Limit of 5 tasks per category
@@ -52,9 +56,15 @@ The repository includes a GitHub Actions workflow at [.github/workflows/deploy.y
 
 The frontend is meant to be connected to Vercel directly through GitHub integration, so it does not need a custom CI deploy step in this repository.
 
+Vercel should be connected to the `frontend/` folder as the project root, with `VITE_API_URL` set to the public Render backend URL.
+
 Required GitHub repository secrets:
 
 - `RENDER_DEPLOY_HOOK_URL` - Render deploy hook URL for the backend service
+
+Required Vercel environment variable:
+
+- `VITE_API_URL` - Public Render backend URL, for example `https://your-backend.onrender.com`
 
 After setting the secret, push to `main` or run the workflow manually from GitHub Actions.
 
