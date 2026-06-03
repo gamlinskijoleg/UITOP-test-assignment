@@ -71,7 +71,7 @@ After setting the secret, push to `main` or run the workflow manually from GitHu
 ## AI Usage Answers
 
 1. **Did you use AI at any stage while working on this task? Why?**
-Yes, AI was used to accelerate the scaffolding and boilerplate generation for the full-stack architecture, allowing focus on the core business logic and requirements such as the transient undo logic, max 5-task limit per category, and seamless UI/UX interactions.
+Yes, I did. I used AI to knock out the initial setup and basic structure for both the front-end and back-end. Writing that kind of repetitive code from scratch takes time, so offloading it to AI let me jump straight into the core features—like building the undo logic, enforcing the 5-task limit per category, and making sure the UI felt smooth.
 
-2. **What kind of problems or uncertainties AI helps you resolve during the process?**
-AI helps in quickly setting up boilerplate configuration (e.g., Vite + Tailwind setup, Express + SQLite integration), generating robust types, and providing idiomatic patterns for handling asynchronous optimistic UI updates with React Hook Form and react-hot-toast.
+2. **What kind of problems or uncertainties AI helps you resolve during the process?****
+It mostly helped with the heavy lifting and boilerplate—getting Vite, Tailwind, Express, and SQLite to talk to each other without losing time on configuration. It was also really useful for double-checking TypeScript types and figuring out the cleanest way to handle instant UI updates (optimistic UI) alongside the form states and toast notifications.
