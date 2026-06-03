@@ -43,6 +43,21 @@ cd backend
 npm run test
 ```
 
+## CI / Deployment
+
+The repository includes a GitHub Actions workflow at [.github/workflows/deploy.yml](.github/workflows/deploy.yml) that:
+
+- runs backend tests on every push to `main`
+- triggers a Render deploy hook for the backend
+
+The frontend is meant to be connected to Vercel directly through GitHub integration, so it does not need a custom CI deploy step in this repository.
+
+Required GitHub repository secrets:
+
+- `RENDER_DEPLOY_HOOK_URL` - Render deploy hook URL for the backend service
+
+After setting the secret, push to `main` or run the workflow manually from GitHub Actions.
+
 ## AI Usage Answers
 
 1. **Did you use AI at any stage while working on this task? Why?**

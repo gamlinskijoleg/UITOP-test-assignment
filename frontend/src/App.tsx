@@ -21,8 +21,6 @@ const App = () => {
   const toastIdsRef = useRef<{ [key: string]: string }>({});
 
   const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
     try {
       const [cats, td] = await Promise.all([
         api.getCategories(),
@@ -30,6 +28,7 @@ const App = () => {
       ]);
       setCategories(cats);
       setTodos(td);
+      setError(null);
     } catch (err: unknown) {
       setError(`Failed to load data. Please make sure backend is running. ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
@@ -38,9 +37,37 @@ const App = () => {
   }, [selectedCategory]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchData();
-  }, [fetchData]);
+    let cancelled = false;
+
+    const loadData = async () => {
+      try {
+        const [cats, td] = await Promise.all([
+          api.getCategories(),
+          api.getTodos(selectedCategory)
+        ]);
+
+        if (cancelled) return;
+
+        setCategories(cats);
+        setTodos(td);
+        setError(null);
+      } catch (err: unknown) {
+        if (cancelled) return;
+
+        setError(`Failed to load data. Please make sure backend is running. ${err instanceof Error ? err.message : 'Unknown error'}`);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedCategory]);
 
   const handleCreateTodo = async (text: string, category_id: number) => {
     const newTodo = await api.createTodo(text, category_id);
@@ -64,7 +91,8 @@ const App = () => {
     } catch (err: unknown) {
       console.error(err);
       toast.error('Action failed');
-      fetchData(); // reload on error
+      // reload on error
+      fetchData();
     }
   };
 
@@ -240,7 +268,10 @@ const App = () => {
               <span className="text-sm font-medium text-gray-600 whitespace-nowrap">Filter by:</span>
               <select
                 value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+                onChange={(e) => {
+                  setLoading(true);
+                  setSelectedCategory(e.target.value);
+                }}
                 className="w-full sm:w-48 px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
               >
                 <option value="all">All Categories</option>
