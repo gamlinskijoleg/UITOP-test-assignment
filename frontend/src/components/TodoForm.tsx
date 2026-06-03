@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import type { Category } from '../types';
 import toast from 'react-hot-toast';
@@ -21,8 +21,8 @@ export const TodoForm: React.FC<TodoFormProps> = ({ categories, onSubmit }) => {
     try {
       await onSubmit(data.text, parseInt(data.category_id, 10));
       reset();
-    } catch (error: any) {
-      toast.error(error.response?.data?.error || 'Failed to create task');
+    } catch {
+      toast.error('Failed to create task');
     }
   };
 
@@ -36,7 +36,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ categories, onSubmit }) => {
         />
         {errors.text && <p className="text-red-500 text-sm mt-1">{errors.text.message}</p>}
       </div>
-      
+
       <div className="w-full md:w-64">
         <select
           {...register('category_id', { required: 'Please select a category' })}
@@ -53,7 +53,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ categories, onSubmit }) => {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center min-w-[120px] disabled:opacity-70"
+        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center min-w-30 disabled:opacity-70"
       >
         {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Add Task'}
       </button>

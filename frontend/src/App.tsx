@@ -17,7 +17,7 @@ const App = () => {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   // Store timeouts for undo actions
-  const timeoutsRef = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const timeoutsRef = useRef<{ [key: string]: ReturnType<typeof setTimeout> }>({});
   const toastIdsRef = useRef<{ [key: string]: string }>({});
 
   const fetchData = useCallback(async () => {
@@ -30,14 +30,15 @@ const App = () => {
       ]);
       setCategories(cats);
       setTodos(td);
-    } catch (err) {
-      setError('Failed to load data. Please make sure backend is running.');
+    } catch (err: unknown) {
+      setError(`Failed to load data. Please make sure backend is running. ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
   }, [selectedCategory]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
   }, [fetchData]);
 
@@ -60,7 +61,7 @@ const App = () => {
         // Let's filter it out if we want it "removed" as per requirement, or just update status.
         setTodos(prev => prev.filter(t => t.id !== todoId));
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error(err);
       toast.error('Action failed');
       fetchData(); // reload on error
@@ -80,7 +81,7 @@ const App = () => {
       (t) => (
         <div className="flex items-center gap-4">
           <span>Task {actionType === 'delete' ? 'deleted' : 'completed'}</span>
-          <button 
+          <button
             className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md font-medium text-sm hover:bg-blue-200 transition-colors"
             onClick={() => {
               toast.dismiss(t.id);
@@ -125,7 +126,7 @@ const App = () => {
         try {
           setTodos(prev => prev.map(t => t.id === todo.id ? { ...t, completed: false } : t));
           await api.updateTodoStatus(todo.id, false);
-        } catch (err) {
+        } catch {
           toast.error('Failed to uncomplete task');
           fetchData();
         }
@@ -138,7 +139,7 @@ const App = () => {
   const handleBulkAction = async (actionType: 'delete' | 'complete') => {
     if (selectedIds.size === 0) return;
     const idsArray = Array.from(selectedIds);
-    
+
     // Optimistic update
     const savedTodos = [...todos];
     setTodos(prev => {
@@ -149,11 +150,11 @@ const App = () => {
 
     const bulkActionId = `bulk-${Date.now()}`;
 
-    const toastId = toast(
+    toast(
       (t) => (
         <div className="flex items-center gap-4">
           <span>{idsArray.length} tasks {actionType === 'delete' ? 'deleted' : 'completed'}</span>
-          <button 
+          <button
             className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md font-medium text-sm"
             onClick={() => {
               toast.dismiss(t.id);
@@ -177,7 +178,7 @@ const App = () => {
         } else {
           await api.bulkUpdateTodos(idsArray, true);
         }
-      } catch(err) {
+      } catch {
         toast.error('Bulk action failed');
         fetchData();
       } finally {

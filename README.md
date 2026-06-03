@@ -10,7 +10,7 @@ A full-stack Todo application built with React, TailwindCSS, Express, and SQLite
 - Responsive and modern UI with TailwindCSS v4
 
 ## Prerequisites
-- Node.js v18+
+- Node.js v22+
 - Docker (optional)
 
 ## Running Locally (Without Docker)
